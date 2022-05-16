@@ -1,0 +1,96 @@
+/* 在css中,目前来说,包含5大类的功能 */
+/* 第一个,是初始化默认样式 */
+
+/* 不能用*号，性能问题，此处只可以写标签名 */
+body {
+    margin: 0;
+}
+
+input {
+    outline: none;
+    border: none;
+}
+
+::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+/* 方法1.2倍 */
+.scale-1-2 {
+    transform: scale(1.2);
+}
+
+.ml-5 {
+    margin-left: 5px;
+}
+
+.mr-5 {
+    margin-right: 5px;
+}
+
+.mr-10 {
+    margin-right: 10px;
+
+}
+
+.mr-30 {
+    margin-right: 30px;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.mt-30 {
+    margin-top: 30px;
+}
+
+.pr-25 {
+    padding-right: 25px;
+}
+
+.space {
+    width: 6px;
+}
+
+.flex {
+    display: flex;
+}
+
+/* 左右 */
+.flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.align-center {
+    display: flex;
+    align-items: center;
+}
+
+/* 全部居中 */
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-column {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ma-a {
+    margin: auto;
+}
+
+:root {
+    --header-height: 60px;
+}
+
+.hi-20 {
+    height: 20px;
+}
