@@ -76,11 +76,11 @@ input {
     justify-content: center;
     align-items: center;
 }
-
-.flex-column {
+/* 一左一右   给父级 */
+.space-between {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: space-between;
 }
 
 .ma-a {

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -49,6 +50,46 @@ const routes = [
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
         component: () => import(/* webpackChunkName: "management" */ '../views/ManagementView.vue')
+      },
+      {
+        path: '/setup',
+        name: 'setup',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "setup" */ '../views/SetUpView.vue')
+      },
+      {
+        path: '/information',
+        name: 'information',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "information" */ '../views/InformationView.vue')
+      },
+      {
+        path: '/jurisdiction',
+        name: 'jurisdiction',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "jurisdiction" */ '../views/JurisdictionView.vue')
+      },
+      {
+        path: '/permissions',
+        name: 'permissions',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "permissions" */ '../views/PermissionsView.vue')
+      },
+      {
+        path: '/details',
+        name: 'details',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "details" */ '../views/DetailsView.vue')
       },
     ]
   },

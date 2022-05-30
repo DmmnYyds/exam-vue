@@ -1,90 +1,168 @@
 <template>
-  <div>
-    <div class="popup">
-      <div class="label">
-        <label for="">题目标题：</label>
-        <el-input v-model="form.title"></el-input>
+  <div class="box">
+    <div class="mian">
+      <div class="title">
+        <h1>创建任务</h1>
       </div>
-      <div class="label" v-for="(option,index) in form.options" :key="option.label">
-        <label for="">{{option.label}}</label>
-        <el-input v-model="option.value"></el-input>
-        <div class="flex-center">
-          <span v-if="index == form.options.length - 1" @click="deleteSelect" class="el-icon-circle-plus-outline"></span>
-          <span v-if="index == form.options.length - 1" @click="createSelect" class="el-icon-remove-outline"></span>
-        </div>
+      <div class="subject">
+        <el-form :rules="rules" ref="form" :model="form" label-width="80px">
+          <el-form-item label="任务名称" prop="name">
+            <el-input v-model="form.name"></el-input>
+          </el-form-item>
+
+          <el-form-item label="任务时长" prop="duration">
+            <el-input-number v-model="form.duration" controls-position="right" @change="handleChange" :min="0" :max="10"></el-input-number>
+          </el-form-item>
+          <el-form-item label="任务说明" prop="desc">
+            <el-input type="textarea" v-model="form.desc" placeholder="请输入任务描述"></el-input>
+          </el-form-item>
+
+          <el-form-item label="执行人">
+            <el-select v-model="form.userId" multiple placeholder="请选择">
+              <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="是否紧急" prop="level">
+            <el-switch v-model="form.level"></el-switch>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="preservation('form')">立即创建</el-button>
+            <el-button @click="resetForm('form')">取消</el-button>
+          </el-form-item>
+        </el-form>
       </div>
-      <div class="label">
-        <label for="">困难等级：</label>
-        <el-radio-group v-model="form.level">
-          <el-radio :label="1">简单</el-radio>
-          <el-radio :label="2">中等</el-radio>
-          <el-radio :label="3">困难</el-radio>
-        </el-radio-group>
-      </div>
-      <el-button size="small" @click="close">取消</el-button>
-      <el-button size="small" @click="createQuestion">确定</el-button>
     </div>
   </div>
 </template>
 
 <script>
+import {
+  getTaskCreateApi,
+  getTaskReleaseApi,
+  getUserListApi,
+} from "@/assets/api/api";
 export default {
   data() {
     return {
-      sex: 1,
-      questions: [],
-      popStatus: false,
       form: {
-        radio: 1,
-        level: 0,
-        options: [
-          {
-            label: "选项A",
-            value: "",
-          },
-          {
-            label: "选项B",
-            value: "",
-          },
-        ],
+        name: "",
+        duration: "",
+        desc: "",
+        level: 1,
+        userId: [],
+        id: "",
+      },
+      options: "",
+      rules: {
+        name: [{ required: true, message: "请输入任务名称", trigger: "blur" }],
+        desc: [{ required: true, message: "请填写任务说明", trigger: "blur" }],
       },
     };
   },
+  async created() {
+    let res = await getUserListApi({ pagination: false });
+    if (res.data.status == 1) {
+      this.options = res.data.data.data.rows;
+    }
+  },
   methods: {
-    createQuestion() {
-      console.log(this.form);
-    },
-    deleteSelect() {
-      this.form.options.pop();
-    },
-    createSelect() {
-      let arr = ["a", "b", "c", "d"];
-      this.form.options.push({
-        label: `选项${arr[this.form.options.length]}`,
+    preservation(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.onSubmit();
+        } else {
+          return false;
+        }
       });
     },
-    close() {
-      this.popStatus = false;
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
     },
-    open() {
-      this.popStatus = true;
+    async onSubmit() {
+      const { name, desc, duration, level } = this.form;
+      let res = await getTaskCreateApi({
+        name,
+        desc,
+        duration,
+        level,
+      });
+      if (res.data.status == 1) {
+        this.form.id = res.data.data[0].id;
+        this.getTaskRelease();
+        this.$confirm("将跳转任务发布界面, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+          .then(() => {
+            this.$router.push({ name: "learning" });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "取消跳转",
+            });
+          });
+      }
+    },
+    async getTaskRelease() {
+      let res = await getTaskReleaseApi({
+        userId: this.form.userId,
+        taskId: this.form.id,
+      });
+      if (res.data.status == 1) {
+        console.log(res);
+      }
+    },
+
+    handleChange(value) {
+      console.log(value);
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.popup {
-  width: 600px;
+.box {
+  height: calc(100vh - 60px);
+  background-color: #dfdfdf;
+  box-sizing: border-box;
   padding: 20px;
-  & .label {
-    margin-top: 10px;
-    display: grid;
-    grid-template-columns: 100px auto 100px;
-    align-items: center;
-    label {
-      width: 100px;
+  & .mian {
+    background-color: #fff;
+    border-radius: 25px;
+    & .title {
+      padding: 20px;
+      border-bottom: 1px solid #d2cdcd;
+      & h1 {
+        margin: 0;
+      }
+    }
+    & ::v-deep .inputRegion {
+      margin-left: 20px;
+    }
+    .subject {
+      padding: 20px;
+      width: 50%;
+      min-width: 788px;
     }
   }
+}
+
+.el-tag + .el-tag {
+  margin-right: 10px;
+}
+.button-new-tag {
+  margin-right: 10px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.input-new-tag {
+  width: 90px;
+  margin-right: 10px;
+  vertical-align: bottom;
 }
 </style>

@@ -1,135 +1,202 @@
 <template>
-  <div class="question">
-    <div class="list">
-      <div class="item" v-for="item in questionList" :key="item.id">
-        <div class="header flex-between">
-          <div class="flex-center">
-            <span>创建时间:</span>
-            <span>{{formatDate(item.createdAt)}}</span>
-          </div>
-          <div class="types ml-50">
-            <span class="type">{{ getTypeName(item.type)}}</span>
-            <span class="type type-level">{{ getLevelName(item.level)}}</span>
-          </div>
-          <div class="operation">
-            <span class="el-icon-edit-outline"></span>
-            <span class="el-icon-delete"></span>
-          </div>
-        </div>
-        <div class="container">
-          <div class="title flex">
-            <el-checkbox></el-checkbox>
-            <div class="ml-5">
-              {{item.title}}
-            </div>
-          </div>
-          <div class="options">
-            <el-radio disabled v-model="item.answer" label="A">{{item.questionA}}</el-radio>
-            <el-radio disabled v-model="item.answer" label="B">{{item.questionB}}</el-radio>
-            <el-radio v-if="item.questionC" disabled v-model="item.answer" label="C">{{item.questionC}}</el-radio>
-            <el-radio v-if="item.questionD" disabled v-model="item.answer" label="D">{{item.questionD}}</el-radio>
-          </div>
-          <div class="answer">
-            <span>答案：</span>
-            <span>{{item.answer}}</span>
-          </div>
-        </div>
+  <div class="box">
+    <div class="mian">
+      <div class="title">
+        <el-input v-model="input" placeholder="请输入内容">
+          <i class="el-icon-edit el-input__icon" slot="prefix">
+          </i>
+        </el-input>
       </div>
+      <div class="subject">
+        <el-table :data="tableData" stripe style="width: 100%">
+          <el-table-column prop="id" label="任务ID" width="200" align="center">
+          </el-table-column>
+          <el-table-column prop="userName" label="发布人姓名" width="200" align="center">
+          </el-table-column>
+          <el-table-column prop="taskName" label="任务名称" width="200" align="center">
+          </el-table-column>
+          <el-table-column prop="level" label="紧急程度" width="250" align="center">
+            <template slot-scope="scope">
+              <el-tag :type="scope.row.level==1?'danger':'primary'" round>{{scope.row.level==1?'十万火急':'丝毫不慌'}}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="duration" label="任务时长" width="100" align="center">
+          </el-table-column>
+          <el-table-column prop="isReceived" label="任务领取状态" width="150" align="center">
+            <template slot-scope="scope">
+              <el-tag :type="scope.row.isReceived==1?'danger':'primary'" round>{{scope.row.isReceived==1?'已领取':'未领取'}}</el-tag>
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="desc" label="简介" align="center">
+          </el-table-column>
+          <el-table-column align="right" width="200">
+            <template slot-scope="scope">
+              <el-button size="mini" @click="handleDelete(scope.row)" type="danger" v-if="scope.row.isReceived!=1">领取任务</el-button>
+              <el-button size="mini" @click="handleEdit(scope.row)" type="primary" plain>发布任务</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <el-pagination align="center" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum" :page-sizes="[5, 10, 15, 20]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="totalCount">
+      </el-pagination>
     </div>
+    <el-dialog class="dialog" title="新增题目" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+      <div>
+        <el-select v-model="value" multiple placeholder="请选择">
+          <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
+          </el-option>
+        </el-select>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="hiddenDialog">取 消</el-button>
+        <el-button type="primary" @click="createQuestion">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getQuestionListApi } from "@/assets/api/api";
-import formatDate from "@/mixins/formatDate";
+import {
+  getTaskListApi,
+  getTaskReleaseApi,
+  getTaskDetailApi,
+  getUserListApi,
+} from "@/assets/api/api";
 export default {
-  mixins: [formatDate],
   data() {
     return {
-      questionList: [],
+      tableData: [],
+      search: "",
+      totalCount: 0,
+      pageSize: 10,
+      pageNum: 1,
+      input: "",
+      userId: [],
+      dialogVisible: false,
+      options: [],
+      options1: [],
+      allUser: [],
+      value: [],
+      taskId: "",
     };
   },
-  async created() {
-    let questionList = await getQuestionListApi({
-      type: 1,
-    });
-    this.questionList = questionList.data.data.rows;
-    console.log(this.questionList);
+  created() {
+    this.getUserList();
+    this.getTaskList();
   },
   methods: {
-    formatDate(val) {
-      return formatDate(val);
+    async getUserList() {
+      let res = await getUserListApi({ pagination: false });
+      this.allUser = res.data.data.data.rows;
     },
-    getTypeName(type) {
-      switch (type) {
-        case 1:
-          return "单";
-        case 2:
-          return "多";
-        case 3:
-          return "填";
-        case 4:
-          return "问";
+    async getTaskList() {
+      const { pageSize, pageNum } = this;
+      let res = await getTaskListApi({
+        pageSize,
+        pageNum,
+      });
+      if (res.data.status == 1) {
+        this.tableData = res.data.data.rows;
+        this.totalCount = res.data.data.count;
       }
     },
-    getLevelName(level) {
-      switch (level) {
-        case 1:
-          return "简单";
-        case 2:
-          return "中等";
-        case 3:
-          return "困难";
+    async handleEdit(row) {
+      this.dialogVisible = true;
+      this.taskId = row.id;
+      const { taskId } = this;
+      let res = await getTaskDetailApi({
+        taskId,
+      });
+      if (res.data.status == 1) {
+        this.options1 = res.data.data.receivedData;
+        this.ergodicId();
       }
+    },
+    ergodicId() {
+      var arr = [];
+      this.allUser.forEach((item) => {
+        if (!this.options1.find((e) => e.userId == item.id)) {
+          arr.push(item);
+        }
+      });
+      this.options = arr;
+      console.log(this.options);
+    },
+    hiddenDialog() {
+      this.dialogVisible = false;
+    },
+    async createQuestion() {
+      console.log(this.value);
+      console.log(this.taskId);
+      let res = await getTaskReleaseApi({
+        userId: this.value,
+        taskId: this.taskId,
+      });
+      if (res.data.status == 1) {
+        this.getTaskList();
+      }
+    },
+    // 点击关闭后提示，防止用户误触
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then(() => {
+          done();
+        })
+        .catch(() => {});
+    },
+    async handleDelete(row) {
+      this.userId.push(localStorage.getItem("wbl"));
+      var taskId = row.id;
+      const { userId } = this;
+      let res = await getTaskReleaseApi({
+        userId,
+        taskId,
+      });
+      if (res.data.status == 1) {
+        this.getTaskList();
+      }
+    },
+    handleSizeChange(val) {
+      this.pageSize = val;
+      this.getTaskList();
+    },
+    handleCurrentChange(val) {
+      this.pageNum = val;
+      this.getTaskList();
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px 0;
-  & .item {
-    border: 1px solid #e2e5ea;
-    border-radius: 4px;
-    padding: 14px 20px;
-    & .header {
-      & .created-time {
-        color: #bababa;
-      }
-      & .types {
-        color: #fff;
-        display: flex;
-        gap: 0 10px;
-        padding: 4px 0;
-        & .type {
-          padding: 4px;
-          border-radius: 4px;
-          background-image: linear-gradient(#f24a38, #fa7d65);
-        }
-        & .type-level {
-          padding: 4px 7px;
-          background-image: linear-gradient(#72d98f, #72d9cb);
-        }
-      }
-      & .operation {
-        display: flex;
-        gap: 0 14px;
+.box {
+  height: calc(100vh - 60px);
+  background-color: #dfdfdf;
+  box-sizing: border-box;
+  padding: 20px;
+  & .mian {
+    background-color: #fff;
+    border-radius: 25px;
+    padding: 20px;
+    box-sizing: border-box;
+    height: 100%;
+    overflow: scroll;
+    & .title {
+      border-bottom: 1px solid #d2cdcd;
+      padding-bottom: 20px;
+      & ::v-deep .el-input__inner {
+        width: 300px;
       }
     }
-    & .container {
-      & .title {
-        padding: 12px 0;
-      }
-      & .options {
-        padding: 12px 22px;
-      }
-      & .answer {
-        padding: 12px 22px;
-      }
+    & .subject {
+      overflow-y: scroll;
     }
+  }
+}
+.dialog {
+  & ::v-deep .el-dialog {
+    width: 500px !important;
   }
 }
 </style>

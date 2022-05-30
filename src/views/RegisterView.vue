@@ -25,6 +25,11 @@
           <div class="hi-20"></div>
           <div class="align-center">
             <div class="star">*</div>
+            <el-input v-model="name" placeholder="请输入真实姓名"></el-input>
+          </div>
+          <div class="hi-20"></div>
+          <div class="align-center">
+            <div class="star">*</div>
             <el-input v-model="captcha" placeholder="请输入验证码" class="input-b"></el-input>
             <el-captcha ref="captcha"></el-captcha>
           </div>
@@ -68,6 +73,7 @@ export default {
       input3: false,
       email: "",
       phone: "",
+      name: "",
       username: "",
       password: "",
       confirm: "",
@@ -82,6 +88,7 @@ export default {
   methods: {
     // 点击下一步进行判断
     next() {
+      
       var res = {
         result: true,
       };
@@ -94,6 +101,9 @@ export default {
       } else if (this.captcha.length !== 4) {
         res.result = false;
         res.message = { message: "验证码不正确", type: "warning" };
+      } else if (this.name.length == "") {
+        res.result = false;
+        res.message = { message: "请输入真实姓名", type: "warning" };
       } else {
         this.input1 = false;
         this.input2 = true;
@@ -112,6 +122,7 @@ export default {
         this.confirm == "" ||
         this.email == "" ||
         this.phone == "" ||
+        this.name == "" ||
         this.captcha == ""
       ) {
         res.result = false;
@@ -147,6 +158,7 @@ export default {
         captcha: this.captcha,
         username: this.username,
         password: this.password,
+        name: this.name,
       });
       if (res.data.status == 1) {
         this.input2 = false;
@@ -157,6 +169,7 @@ export default {
           type: "success",
         });
       } else {
+        console.log(res.data.mag);
         this.$message({
           message: res.data.mag,
           type: "warning",

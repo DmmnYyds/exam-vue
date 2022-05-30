@@ -1,131 +1,95 @@
 <template>
-  <div>
-    <el-tabs type="border-card">
-      <el-tab-pane label="个人习题库">
-        <div class="title">
-          <div class="QuestionType align-center">
-            适用考试：
-            <div class="radioButton">全部</div>
-            <div class="radioButton">期中考试</div>
-            <div class="radioButton">期末考试</div>
-            <div class="radioButton">替他考试</div>
-          </div>
-          <div class="QuestionType align-center mt-20">
-            试卷形式：
-            <div class="radioButton">全部</div>
-            <div class="radioButton">考生同卷</div>
-            <div class="radioButton">随机顺序</div>
-            <div class="radioButton">考生异卷</div>
-          </div>
-          <div class="title-button">
-            <el-button type="primary" style="background:#0168e1">则略组卷</el-button>
-            <el-button type="primary" style="background:#0168e1">手动组卷</el-button>
-            <el-button type="primary" style="background:#0168e1">导入试卷</el-button>
-          </div>
-          <div class="input">
-            <el-autocomplete popper-class="my-autocomplete" placeholder="请输入内容">
-              <i class="el-icon-edit el-input__icon" slot="suffix">
-              </i>
-              <!-- <template slot-scope="{ item }">
-                <div class="name">{{ item.value }}</div>
-                <span class="addr">{{ item.address }}</span>
-              </template> -->
-            </el-autocomplete>
-          </div>
-        </div>
-        <div class="topic">
-          <div class="align-center topic-title">
-            <div class="mr-30">创建时间：2022-5-9 14：43</div>
-            <div class="mr-30 align-center">
-              <div class="bute">期中考试</div>
-              <div class="space"></div>
-              <div class="degree-of-difficulty">考生同卷</div>
-            </div>
-            <div class="mr-30">使用次数：18次</div>
-            <div class="topic-img"><img src="../assets/imgs/垃圾箱.png" alt="" class="img"></div>
-          </div>
-          <div class="mt-20 noumenon" @click="query">
-            1,Java程序设计期中考试
-          </div>
-
-        </div>
-
-      </el-tab-pane>
-      <el-tab-pane label="公共习题库">配置管理</el-tab-pane>
-      <el-tab-pane label="待审习题库">角色管理</el-tab-pane>
-    </el-tabs>
-    <el-pagination layout="prev, pager, next" :total="1000">
+  <div class="box">
+    <el-table :data="tableData" stripe style="width: 100%">
+      <el-table-column prop="name" label="真实姓名" width="150" align="center">
+      </el-table-column>
+      <el-table-column prop="avatarName" label="昵称" width="200" align="center">
+      </el-table-column>
+      <el-table-column prop="phone" label="手机号" width="150" align="center">
+      </el-table-column>
+      <el-table-column prop="sex" label="性别" width="100" align="center">
+        <template slot-scope="scope">{{scope.row.sex==1?'男':'女'}}</template>
+      </el-table-column>
+      <el-table-column prop="email" label="邮箱" width="200" align="center">
+      </el-table-column>
+      <el-table-column prop="provinceNo" label="省" width="100" align="center">
+      </el-table-column>
+      <el-table-column prop="cityNo" label="市" width="100" align="center">
+      </el-table-column>
+      <el-table-column prop="areaNo" label="区/县" width="100" align="center">
+      </el-table-column>
+      <el-table-column prop="desc" label="简介" align="center" show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column align="right" width="200">
+        <template slot="header">
+          <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+        </template>
+        <template slot-scope="scope">
+          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" type="primary" plain>编辑</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination align="center" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum" :page-sizes="[5, 10, 15, 20]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="totalCount">
     </el-pagination>
   </div>
 </template>
 
 <script>
+import citydata from "@/assets/josn/citydata.json";
+import { getUserListApi } from "@/assets/api/api";
 export default {
   data() {
-    return {};
+    return {
+      tableData: [],
+      search: "",
+      totalCount: 0,
+      pageSize: 10,
+      pageNum: 1,
+      province: "",
+    };
+  },
+  created() {
+    this.province = citydata;
+    this.getUserList();
   },
   methods: {
-    query() {
-      if (this.$route.name == "affairs") return;
-      this.$router.push({ name: "affairs" });
+    async getUserList() {
+      const { pageSize, pageNum } = this;
+      let res = await getUserListApi({
+        pageSize,
+        pageNum,
+      });
+      if (res.data.status == 1) {
+        this.tableData = res.data.data.data.rows;
+        this.totalCount = res.data.data.data.count;
+        console.log(res);
+      }
+    },
+    handleEdit(index, row) {
+      console.log(index, row);
+    },
+    handleDelete(index, row) {
+      console.log(index, row);
+    },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.pageSize = val;
+      this.getUserList();
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.pageNum = val;
+      this.getUserList();
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.title {
-  & .QuestionType {
-    font-size: 16px;
-    color: #4a4a4a;
-    & .radioButton {
-      padding: 0px 20px;
-      font-size: 14px;
-      margin-right: 20px;
-      border-radius: 50px;
-      color: #c2c2c2;
-      border: 1px solid #c2c2c2;
-      cursor: pointer;
-    }
-  }
-  & .title-button {
-    margin-top: 20px;
-  }
-  & .input {
-    float: right;
-    position: relative;
-    bottom: 41px;
-  }
-}
-.topic {
-  margin-top: 30px;
-  border: 1px solid #e2e5ea;
-  padding: 20px;
-  & .topic-title {
-    color: #c2c2c2;
-  }
-  & .noumenon {
-    cursor: pointer;
-  }
-  .bute {
-    line-height: 17px;
-    color: #fff;
-    background-image: linear-gradient(#f3503d, #f5907c);
-    border-radius: 3px;
-    padding: 4px;
-  }
-  .degree-of-difficulty {
-    line-height: 17px;
-    color: #fff;
-    background-image: linear-gradient(#72d98d, #a9f3eb);
-    border-radius: 3px;
-    padding: 4px 10px;
-  }
-  & .topic-img {
-    float: right;
-  }
-  & .img {
-    width: 19px;
-  }
+.box {
+  height: calc(100vh - 60px);
+  padding: 30px;
+  box-sizing: border-box;
 }
 </style>

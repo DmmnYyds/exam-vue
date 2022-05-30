@@ -19,12 +19,12 @@
           <el-input class="input-user" placeholder="请输入密码" v-model="password" show-password></el-input>
         </div>
         <div class="captcha">
-          <el-input class="flex-between" placeholder="请输入验证码" v-model="captcha" maxlength="4"></el-input>
+          <el-input class="flex-between" placeholder="请输入验证码" v-model="captcha" maxlength="4" @keyup.enter.native="search"></el-input>
           <el-captcha ref="captcha"></el-captcha>
         </div>
         <div class="user flex-between">
-          <a href="">忘记密码</a>
-          <a href="">注册</a>
+          <a>忘记密码</a>
+          <a @click="register">注册</a>
         </div>
         <button class="button" @click="submit">LOG IN</button>
       </div>
@@ -47,8 +47,8 @@ import democomponent from "@/components/DemoComponent.vue";
 export default {
   data() {
     return {
-      username: "xiaoming",
-      password: "999999",
+      username: "wangbolin",
+      password: "000000",
       captcha: "",
     };
   },
@@ -56,6 +56,12 @@ export default {
     "el-captcha": democomponent,
   },
   methods: {
+    search(e) {
+      var keyCode = window.event ? e.keyCode : e.which;
+      if (keyCode == 13) {
+        this.submit();
+      }
+    },
     // 点击登录进行判断
     getValdateRseult() {
       var res = { result: true };
@@ -99,6 +105,9 @@ export default {
         });
         this.$refs.captcha.getCaptcha();
       }
+    },
+    register() {
+      this.$router.push({ name: "register" });
     },
   },
 };

@@ -28,6 +28,12 @@ export const getUserInfoApi = function (payload = {}) {
     return axios.post('/api/user/info', payload, getpostConfig())
 }
 
+/**
+ * @description 获取用户信息
+ ***/
+export const getUserListApi = function (payload = {}) {
+    return axios.post('/api/user/list', payload, getpostConfig())
+}
 
 
 /**
@@ -121,3 +127,82 @@ export const getQuestionUpdateApi = function (payload = {}) {
 export const getQuestionDeleteApi = function (payload = {}) {
     return axios.post('api/question/delete', payload, getpostConfig())
 }
+
+
+/**
+ * @description 修改个人信息
+ * @param payload.phone        手机号
+ * @param payload.email        邮箱
+ * @param payload.sex          性别
+ * @param payload.avatarName   昵称
+ * @param payload.name         真实姓名
+ * @param payload.provinceNo   省
+ * @param payload.cityNo       市
+ * @param payload.area         区
+ * @param payload.desc         个人介绍
+ * **/
+
+export const getUserUpdateApi = function (payload = {}) {
+    return axios.post('api/user/update', payload, getpostConfig())
+}
+
+/**
+ * @description 创建任务
+ * @param payload.name         任务名称
+ * @param payload.desc         任务描述
+ * @param payload.duration     任务时长
+ * **/
+
+export const getTaskCreateApi = function (payload = {}) {
+    return axios.post('api/task/create', payload, getpostConfig())
+}
+
+/**
+ * @description 发布任务
+ * **/
+
+export const getTaskReleaseApi = function (payload = {}) {
+    return axios.post('api/task/release', payload, getpostConfig())
+}
+
+/**
+ * @description 查询任务
+ * **/
+
+export const getTaskListApi = function (payload = {}) {
+    return axios.post('api/task/list', payload, getpostConfig())
+}
+
+/**
+ * @description 查询任务详情
+ * **/
+
+export const getTaskDetailApi = function (payload = {}) {
+    return axios.post('api/task/detail', payload, getpostConfig())
+}
+
+/**
+ * @description 创建角色
+ * **/
+
+export const getRoleCreateApi = function (payload = {}) {
+    return axios.post('api/role/create', payload, getpostConfig())
+}
+/**
+ * @description 角色分组列表
+ * **/
+
+export const getRoleGroupListApi = function (payload = {}) {
+    return axios.post('api/roleGroup/list', payload, getpostConfig())
+}
+/**
+ * @description 角色列表
+ * **/
+
+export const getRoleListApi = function (payload = {}) {
+    return axios.post('api/role/list', payload, getpostConfig())
+}
+/**
+ * @description 角色列表
+ * **/
+

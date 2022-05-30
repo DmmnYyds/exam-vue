@@ -24,13 +24,15 @@
             <el-button type="primary" style="background:#0168e1">加入公共习题库</el-button>
           </div>
           <div class="input">
-            <el-autocomplete popper-class="my-autocomplete" placeholder="请输入内容">
-              <i class="el-icon-edit el-input__icon" slot="suffix">
+            <el-input v-model="inputValue" placeholder="请输入内容">
+              <i class="el-icon-search el-input__icon" slot="suffix" @click="getQuestionList">
               </i>
-            </el-autocomplete>
+            </el-input>
+
           </div>
         </div>
-        <div class="list">
+        <el-empty description="抱歉！题库中目前没有题" v-if="empty" class="empty"></el-empty>
+        <div class="list" v-if="topic">
           <div class="item" v-for="item in questionList" :key="item.id">
             <div class="header flex-between">
               <div class="math flex-center">
@@ -66,7 +68,7 @@
             </div>
           </div>
           <div class="pagination">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum" :page-sizes="[2, 5, 10, 15]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="totalCount">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum" :page-sizes="[2, 5, 10, 15]" :page-size="5" layout="total, sizes, prev, pager, next, jumper" :total="totalCount">
             </el-pagination>
           </div>
         </div>
@@ -123,6 +125,8 @@ export default {
   mixins: [formatDate],
   data() {
     return {
+      topic: true,
+      empty: false,
       selected: {},
       title: "",
       questionList: [],
@@ -145,7 +149,7 @@ export default {
       ],
       answer: "",
       pageNum: 1,
-      pageSize: 2,
+      pageSize: 5,
       totalCount: 0,
       questuonOptionsTemp: [
         {
@@ -178,6 +182,7 @@ export default {
         },
       ],
       isCreateEvent: true,
+      inputValue: "",
     };
   },
   // 监听
@@ -326,12 +331,21 @@ export default {
     },
     // 查询接口
     async getQuestionList() {
+      let title = this.inputValue.trim();
+      if (title) {
+        this.pageNum = 1;
+      }
       const { pageSize, pageNum } = this;
       let res = await getQuestionListApi({
         type: 1,
         pageSize,
         pageNum,
+        title,
       });
+      if (res.data.data.rows.length == 0) {
+        this.topic = false;
+        this.empty = true;
+      }
       this.questionList = res.data.data.rows;
       this.totalCount = res.data.data.count;
     },
@@ -424,7 +438,9 @@ export default {
     bottom: 41px;
   }
 }
-
+.empty {
+  width: 100%;
+}
 .list {
   margin-top: 20px;
   display: flex;
