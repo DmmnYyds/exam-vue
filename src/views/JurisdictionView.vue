@@ -135,8 +135,8 @@ export default {
     },
     async getMenuList() {
       let [roleList, roleGroupList] = await Promise.all([
-        getRoleListApi({ pagination: false }),
-        getRoleGroupListApi({ pagination: false }),
+        getRoleListApi(),
+        getRoleGroupListApi(),
       ]);
       this.role = roleList.data.data.rows;
       this.roleGroup = roleGroupList.data.data.rows;

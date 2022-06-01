@@ -192,17 +192,15 @@ export const getRoleCreateApi = function (payload = {}) {
  * @description 角色分组列表
  * **/
 
-export const getRoleGroupListApi = function (payload = {}) {
+export const getRoleGroupListApi = function (payload = { pagination: false }) {
     return axios.post('api/roleGroup/list', payload, getpostConfig())
 }
 /**
  * @description 角色列表
  * **/
 
-export const getRoleListApi = function (payload = {}) {
+export const getRoleListApi = function (payload = { pagination: false }) {
     return axios.post('api/role/list', payload, getpostConfig())
 }
-/**
- * @description 角色列表
- * **/
+
 

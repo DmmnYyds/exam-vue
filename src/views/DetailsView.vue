@@ -41,40 +41,43 @@
     <div class="sidebar">
       <div class="item">
         <h3>项目</h3>
-        <span> <i class="el-icon-female"></i> test123</span>
+        <span> <i class="el-icon-female"></i> {{from.taskName}}</span>
       </div>
       <div class="item">
         <h3>状态</h3>
-        <el-tag>未开始</el-tag>
+        <el-tag :type="from.level==1?'danger':'primary'" round>{{from.level==1?"十万火急":"丝毫不慌"}}</el-tag>
       </div>
       <div class="item">
-        <h3>处理人</h3>
+        <h3>创建人</h3>
         <div class="align-center">
-          <el-avatar size="small">王</el-avatar>
-          <span>盒子组</span>
+          <el-avatar size="small">{{from.userName.slice(0,1)}}</el-avatar>
+          <span>{{from.userName}}</span>
         </div>
       </div>
       <div class="item">
         <h3>所属需求</h3>
-        <span>未关联需求</span>
+        <span>{{from.desc || "无"}}</span>
       </div>
       <div class="item">
         <h3>优先级</h3>
-        <span>中</span>
+        <span>{{from.level==1?"高":"低"}}</span>
       </div>
       <div class="item">
         <h3>截止日期</h3>
-        <span>未指定</span>
+        <span>{{from.duration + "天"}}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { getTaskDetailApi } from "@/assets/api/api";
 export default {
   data() {
     return {
       reverse: true,
+      taskId: "",
+      from: [],
       activities: [
         {
           content: "活动按期开始",
@@ -90,6 +93,23 @@ export default {
         },
       ],
     };
+  },
+  created() {
+    this.taskId = this.$route.params.taskId;
+    this.getTaskDetail();
+  },
+  methods: {
+    async getTaskDetail() {
+      const { taskId } = this;
+      let res = await getTaskDetailApi({
+        taskId,
+      });
+      if (res.data.status == 1) {
+        console.log(res.data.data);
+        this.from = res.data.data;
+        console.log(this.from);
+      }
+    },
   },
 };
 </script>

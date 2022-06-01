@@ -28,12 +28,13 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="desc" label="简介" align="center">
+          <el-table-column prop="desc" label="简介" align="center" show-overflow-tooltip>
           </el-table-column>
-          <el-table-column align="right" width="200">
+          <el-table-column align="right" width="300">
             <template slot-scope="scope">
               <el-button size="mini" @click="handleDelete(scope.row)" type="danger" v-if="scope.row.isReceived!=1">领取任务</el-button>
               <el-button size="mini" @click="handleEdit(scope.row)" type="primary" plain>发布任务</el-button>
+              <el-button size="mini" @click="TaskDetails(scope.row)" type="primary" plain>任务详情</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -164,6 +165,14 @@ export default {
     handleCurrentChange(val) {
       this.pageNum = val;
       this.getTaskList();
+    },
+    TaskDetails(taskId) {
+      this.$router.push({
+        name: "details",
+        params: {
+          taskId: taskId.id,
+        },
+      });
     },
   },
 };
