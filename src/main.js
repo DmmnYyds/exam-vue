@@ -4,7 +4,7 @@ import router from './router'
 import store from './store'
 import ElementUI from 'element-ui'
 import './styles.scss'
-import '../src/common.css'
+import '../src/common.scss'
 import VueSocketIO from 'vue-socket.io'
 
 Vue.use(ElementUI)
