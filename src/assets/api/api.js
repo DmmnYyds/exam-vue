@@ -2,14 +2,25 @@
 // api.js就是存放服务端的接口的;
 import axios from "axios";
 
-const getpostConfig = function () {
-    return {
-        headers: {
-            contentType: 'application/json',
-            authorization: sessionStorage.getItem("token"),
-        },
-    }
+// // 添加响应拦截器
+// axios.interceptors.response.use(function (response) {
+//     // 对响应数据做点什么
+//     if (response.data.status == 401) {
+//         window.location.href = '/'
+//     }
+//     return response;
+// }, function (error) {
+//     // 对相应错误做点什么
+//     return Promise.reject(error)
+// })
+
+const postConfig = {
+    headers: {
+        authorization: sessionStorage.getItem('token'),
+        contentType: 'application/json',
+    },
 }
+
 
 /**
  * @description 获取验证码
@@ -25,14 +36,14 @@ export const getCaptchaApi = function () {
  * @description 获取用户信息
  ***/
 export const getUserInfoApi = function (payload = {}) {
-    return axios.post('/api/user/info', payload, getpostConfig())
+    return axios.post('/api/user/info', payload, postConfig)
 }
 
 /**
  * @description 获取用户信息
  ***/
 export const getUserListApi = function (payload = {}) {
-    return axios.post('/api/user/list', payload, getpostConfig())
+    return axios.post('/api/user/list', payload, postConfig)
 }
 
 
@@ -45,7 +56,7 @@ export const getUserListApi = function (payload = {}) {
  * @author Wbl
  * **/
 export const loginApi = function (payload = {}) {
-    return axios.post('/api/user/login', payload, getpostConfig())
+    return axios.post('/api/user/login', payload, postConfig)
 }
 
 
@@ -82,7 +93,7 @@ export const logoutApi = function () {
  * @param payload.pageNum    非必填 想获取第几页的数据
  * **/
 export const getQuestionListApi = function (payload = {}) {
-    return axios.post('api/question/list', payload, getpostConfig())
+    return axios.post('api/question/list', payload, postConfig)
 }
 
 /**
@@ -98,7 +109,7 @@ export const getQuestionListApi = function (payload = {}) {
  * @param payload.lever     难度系数
  * **/
 export const getQuestionCreateApi = function (payload = {}) {
-    return axios.post('api/question/create', payload, getpostConfig())
+    return axios.post('api/question/create', payload, postConfig)
 }
 
 /**
@@ -116,7 +127,7 @@ export const getQuestionCreateApi = function (payload = {}) {
  * @param 注释： 修改的入参，必传项是id,和type, 其它的参数是修改哪个传哪个，入参的key的数量必须  >= 3；
  * **/
 export const getQuestionUpdateApi = function (payload = {}) {
-    return axios.post('api/question/update', payload, getpostConfig())
+    return axios.post('api/question/update', payload, postConfig)
 }
 
 /**
@@ -125,7 +136,7 @@ export const getQuestionUpdateApi = function (payload = {}) {
  * @param patyload.id       必填 题目id
  * **/
 export const getQuestionDeleteApi = function (payload = {}) {
-    return axios.post('api/question/delete', payload, getpostConfig())
+    return axios.post('api/question/delete', payload, postConfig)
 }
 
 
@@ -143,7 +154,7 @@ export const getQuestionDeleteApi = function (payload = {}) {
  * **/
 
 export const getUserUpdateApi = function (payload = {}) {
-    return axios.post('api/user/update', payload, getpostConfig())
+    return axios.post('api/user/update', payload, postConfig)
 }
 
 /**
@@ -154,7 +165,7 @@ export const getUserUpdateApi = function (payload = {}) {
  * **/
 
 export const getTaskCreateApi = function (payload = {}) {
-    return axios.post('api/task/create', payload, getpostConfig())
+    return axios.post('api/task/create', payload, postConfig)
 }
 
 /**
@@ -162,7 +173,7 @@ export const getTaskCreateApi = function (payload = {}) {
  * **/
 
 export const getTaskReleaseApi = function (payload = {}) {
-    return axios.post('api/task/release', payload, getpostConfig())
+    return axios.post('api/task/release', payload, postConfig)
 }
 
 /**
@@ -170,7 +181,7 @@ export const getTaskReleaseApi = function (payload = {}) {
  * **/
 
 export const getTaskListApi = function (payload = {}) {
-    return axios.post('api/task/list', payload, getpostConfig())
+    return axios.post('api/task/list', payload, postConfig)
 }
 
 /**
@@ -178,7 +189,7 @@ export const getTaskListApi = function (payload = {}) {
  * **/
 
 export const getTaskDetailApi = function (payload = {}) {
-    return axios.post('api/task/detail', payload, getpostConfig())
+    return axios.post('api/task/detail', payload, postConfig)
 }
 
 /**
@@ -186,21 +197,21 @@ export const getTaskDetailApi = function (payload = {}) {
  * **/
 
 export const getRoleCreateApi = function (payload = {}) {
-    return axios.post('api/role/create', payload, getpostConfig())
+    return axios.post('api/role/create', payload, postConfig)
 }
 /**
  * @description 角色分组列表
  * **/
 
 export const getRoleGroupListApi = function (payload = { pagination: false }) {
-    return axios.post('api/roleGroup/list', payload, getpostConfig())
+    return axios.post('api/roleGroup/list', payload, postConfig)
 }
 /**
  * @description 角色列表
  * **/
 
 export const getRoleListApi = function (payload = { pagination: false }) {
-    return axios.post('api/role/list', payload, getpostConfig())
+    return axios.post('api/role/list', payload, postConfig)
 }
 
 

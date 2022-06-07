@@ -58,11 +58,23 @@ input {
     display: flex;
 }
 
-/* 左右 */
-.flex-between {
+@mixin flex-content($content) {
     display: flex;
+    justify-content: $content;
     align-items: center;
-    justify-content: space-between;
+}
+
+// 左右
+.flex-between {
+    @include flex-content(space-between)
+}
+
+.flex-around {
+    @include flex-content(space-around)
+}
+
+.flex-center {
+    @include flex-content(center)
 }
 
 .align-center {
@@ -70,18 +82,6 @@ input {
     align-items: center;
 }
 
-/* 全部居中 */
-.flex-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-/* 一左一右   给父级 */
-.space-between {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
 
 .ma-a {
     margin: auto;

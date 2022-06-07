@@ -106,15 +106,14 @@ export default {
   // 实例生成前调用信息
   created() {
     getUserInfoApi().then((res) => {
-      if (res.data.status == 401) {
-        this.$router.push({ name: "login" });
-      }
+      console.log(res);
       this.username = res.data.data.phone;
       localStorage.setItem("wbl", res.data.data.id);
     });
   },
   methods: {
     // 打开子窗口
+
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
     },

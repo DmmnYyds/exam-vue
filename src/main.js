@@ -6,8 +6,15 @@ import ElementUI from 'element-ui'
 import './styles.scss'
 import '../src/common.scss'
 import VueSocketIO from 'vue-socket.io'
+import navigator from '@/assets/utils/navigator'
+import Cache from '@/assets/utils/cache'
+
+
+Vue.use(navigator)
 
 Vue.use(ElementUI)
+
+Vue.prototype.$bus = new Cache()
 
 Vue.config.productionTip = false
 
