@@ -9,7 +9,7 @@
       </div>
       <div class="subject">
         <el-table :data="tableData" stripe style="width: 100%">
-          <el-table-column prop="id" label="任务ID" width="200" align="center">
+          <el-table-column prop="id" label="任务ID" width="150" align="center">
           </el-table-column>
           <el-table-column prop="userName" label="发布人姓名" width="200" align="center">
           </el-table-column>
@@ -30,9 +30,10 @@
 
           <el-table-column prop="desc" label="简介" align="center" show-overflow-tooltip>
           </el-table-column>
-          <el-table-column align="right" width="300">
+          <el-table-column align="right" width="400">
             <template slot-scope="scope">
               <el-button size="mini" @click="handleDelete(scope.row)" type="danger" v-if="scope.row.isReceived!=1">领取任务</el-button>
+              <el-button size="mini" @click="taskUpdate(scope.row)" type="primary" plain>编辑任务</el-button>
               <el-button size="mini" @click="handleEdit(scope.row)" type="primary" plain>发布任务</el-button>
               <el-button size="mini" @click="TaskDetails(scope.row)" type="primary" plain>任务详情</el-button>
             </template>
@@ -63,6 +64,7 @@ import {
   getTaskReleaseApi,
   getTaskDetailApi,
   getUserListApi,
+  getTaskUpdateApi,
 } from "@/assets/api/api";
 export default {
   data() {
@@ -87,6 +89,11 @@ export default {
     this.getTaskList();
   },
   methods: {
+    async taskUpdate(row) {
+      console.log(row);
+      let res = await getTaskUpdateApi({});
+      console.log(res);
+    },
     async getUserList() {
       let res = await getUserListApi({ pagination: false });
       this.allUser = res.data.data.data.rows;
@@ -149,9 +156,8 @@ export default {
     async handleDelete(row) {
       this.userId.push(localStorage.getItem("wbl"));
       var taskId = row.id;
-      const { userId } = this;
       let res = await getTaskReleaseApi({
-        userId,
+        userIds: this.userId,
         taskId,
       });
       if (res.data.status == 1) {
@@ -201,11 +207,6 @@ export default {
     & .subject {
       overflow-y: scroll;
     }
-  }
-}
-.dialog {
-  & ::v-deep .el-dialog {
-    width: 500px !important;
   }
 }
 </style>

@@ -169,6 +169,17 @@ export const getTaskCreateApi = function (payload = {}) {
 }
 
 /**
+ * @description 编辑任务
+ * @param payload.name         任务名称
+ * @param payload.desc         任务描述
+ * @param payload.duration     任务时长
+ * **/
+
+export const getTaskUpdateApi = function (payload = {}) { 
+    return axios.post('api/task/update', payload, postConfig)
+}
+
+/**
  * @description 发布任务
  * **/
 

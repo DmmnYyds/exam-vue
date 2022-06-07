@@ -65,7 +65,7 @@
                 <i class="el-icon-setting"></i>
                 <span slot="title">权限管理</span>
               </el-menu-item>
-              <el-menu-item index="7">
+              <el-menu-item index="7" @click="navigator('administration')">
                 <i class="el-icon-setting"></i>
                 <span slot="title">任务详情</span>
               </el-menu-item>

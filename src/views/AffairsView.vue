@@ -298,6 +298,7 @@ export default {
     },
     // 显示弹窗，如果是编辑则渲染数据
     showDialog(data) {
+      console.log(data);
       this.dialogVisible = true;
       this.initFormPrams();
       let isCreateEvent = data instanceof PointerEvent;
