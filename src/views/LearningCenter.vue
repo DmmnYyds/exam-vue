@@ -43,7 +43,7 @@
       <el-pagination align="center" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum" :page-sizes="[5, 10, 15, 20]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="totalCount">
       </el-pagination>
     </div>
-    <el-dialog class="dialog" title="新增题目" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+    <el-dialog class="dialog" title="发布任务" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
       <div>
         <el-select v-model="value" multiple placeholder="请选择">
           <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
@@ -54,6 +54,9 @@
         <el-button @click="hiddenDialog">取 消</el-button>
         <el-button type="primary" @click="createQuestion">确 定</el-button>
       </span>
+    </el-dialog>
+    <el-dialog title="编辑任务" :before-close="handleClose" :visible.sync="editTask">
+      <el-task @edit="getTaskUpdate" ref="task" :grtp="from"></el-task>
     </el-dialog>
   </div>
 </template>
@@ -69,6 +72,7 @@ import {
 export default {
   data() {
     return {
+      from: {},
       tableData: [],
       search: "",
       totalCount: 0,
@@ -77,6 +81,7 @@ export default {
       input: "",
       userId: [],
       dialogVisible: false,
+      editTask: false,
       options: [],
       options1: [],
       allUser: [],
@@ -89,10 +94,32 @@ export default {
     this.getTaskList();
   },
   methods: {
-    async taskUpdate(row) {
-      console.log(row);
-      let res = await getTaskUpdateApi({});
-      console.log(res);
+    taskUpdate(data) {
+      let row = JSON.parse(JSON.stringify(data));
+      const { taskName, desc, userId, duration, level } = row;
+      this.from = {
+        taskId: row.id,
+        taskName,
+        desc,
+        userId,
+        duration,
+        level: level == 1 ? true : false,
+      };
+      this.editTask = true;
+      console.log(888);
+    },
+    async getTaskUpdate(item) {
+      let res = await getTaskUpdateApi({
+        id: item.taskId,
+        name: item.taskName,
+        desc: item.desc,
+        duration: item.duration,
+        level: item.level,
+      });
+      if (res.data.status == 1) {
+        this.getTaskList();
+        this.editTask = false;
+      }
     },
     async getUserList() {
       let res = await getUserListApi({ pagination: false });
@@ -110,6 +137,7 @@ export default {
       }
     },
     async handleEdit(row) {
+      console.log(row);
       this.dialogVisible = true;
       this.taskId = row.id;
       const { taskId } = this;
@@ -129,7 +157,6 @@ export default {
         }
       });
       this.options = arr;
-      console.log(this.options);
     },
     hiddenDialog() {
       this.dialogVisible = false;
@@ -138,10 +165,11 @@ export default {
       console.log(this.value);
       console.log(this.taskId);
       let res = await getTaskReleaseApi({
-        userId: this.value,
+        userIds: this.value,
         taskId: this.taskId,
       });
       if (res.data.status == 1) {
+        this.dialogVisible = false;
         this.getTaskList();
       }
     },
@@ -150,6 +178,7 @@ export default {
       this.$confirm("确认关闭？")
         .then(() => {
           done();
+          // this.$refs.task.clear();
         })
         .catch(() => {});
     },

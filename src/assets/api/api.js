@@ -2,17 +2,17 @@
 // api.js就是存放服务端的接口的;
 import axios from "axios";
 
-// // 添加响应拦截器
-// axios.interceptors.response.use(function (response) {
-//     // 对响应数据做点什么
-//     if (response.data.status == 401) {
-//         window.location.href = '/'
-//     }
-//     return response;
-// }, function (error) {
-//     // 对相应错误做点什么
-//     return Promise.reject(error)
-// })
+// 添加响应拦截器
+axios.interceptors.response.use(function (response) {
+    // 对响应数据做点什么
+    if (response.data.status == 401) {
+        window.location.href = '/'
+    }
+    return response;
+}, function (error) {
+    // 对相应错误做点什么
+    return Promise.reject(error)
+})
 
 const postConfig = {
     headers: {
@@ -175,7 +175,7 @@ export const getTaskCreateApi = function (payload = {}) {
  * @param payload.duration     任务时长
  * **/
 
-export const getTaskUpdateApi = function (payload = {}) { 
+export const getTaskUpdateApi = function (payload = {}) {
     return axios.post('api/task/update', payload, postConfig)
 }
 

@@ -4,41 +4,31 @@
       <div class="title">
         <h1>创建任务</h1>
       </div>
-      <el-task @greet="fatherClick"></el-task>
+      <el-task @greet="preservation"></el-task>
     </div>
   </div>
 </template>
 
 <script>
-import {
-  getTaskCreateApi,
-  getTaskReleaseApi,
-  getUserListApi,
-} from "@/assets/api/api";
+import { getTaskCreateApi, getTaskReleaseApi } from "@/assets/api/api";
 export default {
   data() {
     return {};
   },
 
-  async created() {
-    let res = await getUserListApi({ pagination: false });
-    if (res.data.status == 1) {
-      this.options = res.data.data.data.rows;
-    }
-  },
   methods: {
-    async fatherClick(item) {
+    async preservation(item) {
       this.userId = item.userId;
-      const { name, desc, duration, level } = item;
+      const { desc, duration, level } = item;
       let res = await getTaskCreateApi({
-        name,
+        name: item.taskName,
         desc,
         duration,
         level,
       });
       if (res.data.status == 1) {
         this.id = res.data.data[0].id;
-        this.getTaskRelease();
+        this.getTaskRelease(item);
         this.$confirm("将跳转任务发布界面, 是否继续?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
@@ -55,22 +45,10 @@ export default {
           });
       }
     },
-    preservation(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.onSubmit();
-        } else {
-          return false;
-        }
-      });
-    },
-    resetForm(formName) {
-      this.$refs[formName].resetForm();
-    },
-
-    async getTaskRelease() {
+    async getTaskRelease(item) {
+      this.id;
       let res = await getTaskReleaseApi({
-        userIds: this.userId,
+        userIds: item.userId,
         taskId: this.id,
       });
       if (res.data.status == 1) {
@@ -79,6 +57,42 @@ export default {
     },
   },
 };
+// import {
+//   getTaskCreateApi,
+//   getTaskReleaseApi,
+//   getUserListApi,
+// } from "@/assets/api/api";
+// export default {
+//   data() {
+//     return {};
+//   },
+
+//   async created() {
+//     let res = await getUserListApi({ pagination: false });
+//     if (res.data.status == 1) {
+//       this.options = res.data.data.data.rows;
+//     }
+//   },
+//   methods: {
+//
+//     preservation(formName) {
+//       this.$refs[formName].validate((valid) => {
+//         if (valid) {
+//           this.onSubmit();
+//         } else {
+//           return false;
+//         }
+//       });
+//     },
+//     resetForm(formName) {
+//       this.$refs[formName].resetForm();
+//     },
+
+//
+//   },
+
+// };
+//
 </script>
 
 <style lang="scss" scoped>
