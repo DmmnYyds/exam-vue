@@ -1,13 +1,12 @@
 <template>
   <div class="box">
-    <div>
-
-    </div>
-    <div class="flex-between">
-      <el-title>
-        权限配置
-      </el-title>
-      <el-button type="text" size="mini" @click="() => append(0)">添加最高权限</el-button>
+    <div class="box-title">
+      <div class="flex-between">
+        <el-title>
+          权限配置
+        </el-title>
+        <el-button type="text" size="mini" @click="() => append(0)">添加最高权限</el-button>
+      </div>
     </div>
     <div class="wrap">
       <div class="block">
@@ -15,15 +14,15 @@
           <span class="custom-tree-node" slot-scope="{ node, data }">
             <span>{{ data.title }}</span>
             <span>
+              <el-button type="text" size="mini" @click="() => remove(node, data)" v-if="!data.children.length">删除</el-button>
               <el-button type="text" size="mini" @click="() => append(data)">添加</el-button>
-              <el-button type="text" size="mini" @click="() => remove(node, data)">删除</el-button>
               <el-button type="text" size="mini" @click="() => modify(data)">修改</el-button>
             </span>
           </span>
         </el-tree>
       </div>
     </div>
-    <el-dialog class="dialog" title="添加" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+    <el-dialog class="dialog" :title="state=='found'?'创建':'修改'" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
       <div>
         <el-form ref="from" :model="from" label-width="80px" :rules="rules">
           <el-form-item label="标题：" prop="title">
@@ -34,11 +33,18 @@
             <el-radio v-model="from.type" :label="2">页面</el-radio>
             <el-radio v-model="from.type" :label="3">功能</el-radio>
           </el-form-item>
+          <el-form-item label="插入：" v-if="state=='change'">
+            <el-select v-model="from.pid" filterable placeholder="请选择">
+              <el-option v-for="item in options" :key="item.id" :label="item.title" :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="hiddenDialog">取 消</el-button>
-        <el-button type="primary" @click="preservation('from')">确 定</el-button>
+        <el-button type="primary" @click="preservation('from')" v-if="state=='found'">创 建</el-button>
+        <el-button type="primary" @click="getPermissionUpdate(from)" v-else>修 改</el-button>
       </span>
     </el-dialog>
   </div>
@@ -51,7 +57,6 @@ import {
   getPermissionDeleteApi,
   getPermissionUpdateApi,
 } from "@/assets/api/api";
-// let id = 1;
 export default {
   data() {
     return {
@@ -62,7 +67,9 @@ export default {
       },
       arr: [],
       data: [],
+      options: [],
       dialogVisible: false,
+      state: "",
       rules: {
         title: [{ required: true, message: "请输入标题名称", trigger: "blur" }],
       },
@@ -72,11 +79,29 @@ export default {
     this.getPermissionList();
   },
   methods: {
-    async modify(data) {
+    modify(data) {
+      this.state = "change";
+      this.dialogVisible = true;
+      this.from = data;
+    },
+
+    async getPermissionUpdate(data) {
       console.log(data);
-      
-      let res = await getPermissionUpdateApi({});
-      console.log(res);
+      const { title, id, pid, type } = data;
+      let res = await getPermissionUpdateApi({
+        title,
+        id,
+        pid,
+        type,
+      });
+      if (res.data.status == 1) {
+        this.$message({
+          message: "修改成功",
+          type: "success",
+        });
+        this.getPermissionList();
+        this.dialogVisible = false;
+      }
     },
     preservation(formName) {
       this.$refs[formName].validate((valid) => {
@@ -107,11 +132,11 @@ export default {
           type: "warning",
         });
       }
-      this.from.title = "";
     },
     async getPermissionList() {
       let res = await getPermissionListApi();
       if (res.data.status == 1) {
+        this.options = res.data.data.rows;
         let list = res.data.data.rows;
         // list.forEach((item) => {
         //   let parent = list.find((parentItem) => parentItem.id == item.pid);
@@ -126,8 +151,10 @@ export default {
         this.data = list.filter((item) => !item.pid);
       }
     },
+
     append(data) {
-      console.log(data);
+      this.from.title = "";
+      this.state = "found";
       this.dialogVisible = true;
       this.from.pid = data.id;
     },
@@ -196,9 +223,12 @@ export default {
   height: calc(100vh - 60px);
   padding: 20px;
   box-sizing: border-box;
-  .wrap {
+  & .wrap {
     width: 30%;
     padding: 20px 0;
+  }
+  & .box-title {
+    width: 30%;
   }
 }
 .custom-tree-node {

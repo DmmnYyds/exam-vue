@@ -12,7 +12,7 @@
         <el-aside width="300px" class="el-aside">
           <el-button type="text"><i class="el-icon-user"></i>新增角色</el-button>
           <el-button type="text"><i class="el-icon-user"></i>新增分组</el-button>
-          <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
+          <el-menu default-active="1-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
             <el-submenu :index="item.id.toString()" v-for="(item) in roleGroup" :key="item.id">
               <template slot="title">
                 <i class="el-icon-user"></i>
