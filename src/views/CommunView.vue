@@ -57,42 +57,7 @@ export default {
     },
   },
 };
-// import {
-//   getTaskCreateApi,
-//   getTaskReleaseApi,
-//   getUserListApi,
-// } from "@/assets/api/api";
-// export default {
-//   data() {
-//     return {};
-//   },
 
-//   async created() {
-//     let res = await getUserListApi({ pagination: false });
-//     if (res.data.status == 1) {
-//       this.options = res.data.data.data.rows;
-//     }
-//   },
-//   methods: {
-//
-//     preservation(formName) {
-//       this.$refs[formName].validate((valid) => {
-//         if (valid) {
-//           this.onSubmit();
-//         } else {
-//           return false;
-//         }
-//       });
-//     },
-//     resetForm(formName) {
-//       this.$refs[formName].resetForm();
-//     },
-
-//
-//   },
-
-// };
-//
 </script>
 
 <style lang="scss" scoped>

@@ -233,7 +233,7 @@ export default {
       return res;
     },
     // 创建/编辑参数格式化
-    initFormPrams() { 
+    initFormPrams() {
       this.form = {
         type: 1,
         title: "",

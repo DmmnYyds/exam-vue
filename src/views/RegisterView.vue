@@ -88,7 +88,6 @@ export default {
   methods: {
     // 点击下一步进行判断
     next() {
-      
       var res = {
         result: true,
       };
@@ -185,6 +184,7 @@ export default {
         captcha: this.captcha,
       });
       sessionStorage.setItem("token", res.data.data);
+      this.Jump();
     },
     // 点击跳转至home界面
     jump() {

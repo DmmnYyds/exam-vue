@@ -11,12 +11,10 @@
         <el-form-item label="任务说明" prop="desc">
           <el-input type="textarea" v-model="form.desc" placeholder="请输入任务描述"></el-input>
         </el-form-item>
-        <el-form-item label="执行人">
-          <el-select v-model="form.userId" multiple placeholder="请选择">
-            <template v-for="item in users">
-              <el-option v-if="item.screen == 0" :key="item.id" :label="item.name" :value="item.id">
-              </el-option>
-            </template>
+        <el-form-item label="执行人" v-if="receivedTaskUsers.length">
+          <el-select v-model="form.userIds" multiple placeholder="请选择">
+            <el-option v-for="item in receivedTaskUsers" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="是否紧急" prop="level">
@@ -31,7 +29,11 @@
 </template>
 
 <script>
-import { getUserListApi, getTaskDetailApi } from "@/assets/api/api";
+import {
+  getUserListApi,
+  getTaskDetailApi,
+  getTaskReleaseApi,
+} from "@/assets/api/api";
 export default {
   props: ["grtp"], //命名不对
   data() {
@@ -41,12 +43,11 @@ export default {
         duration: "",
         desc: "",
         level: 1,
-        userId: [], //form表单中的v-model 要和服务端的字段保证统一
+        userIds: [], //form表单中的v-model 要和服务端的字段保证统一
         id: "",
         taskId: "",
       },
       users: [],
-
       rules: {
         name: [{ required: true, message: "请输入任务名称", trigger: "blur" }],
         desc: [{ required: true, message: "请填写任务说明", trigger: "blur" }],
@@ -55,16 +56,18 @@ export default {
   },
   watch: {
     grtp: function () {
-      console.log(999);
       //form下面有4   userId: [],   //form表单中的v-model 要和服务端的字段保证统一
       this.form = JSON.parse(JSON.stringify(this.grtp));
-      console.log(666);
+    },
+  },
+  computed: {
+    receivedTaskUsers() {
+      return this.users.filter((item) => item.screen != 1);
     },
   },
   created() {
     if (this.grtp) {
       this.form = this.grtp;
-      this.GetUnchecked(this.form);
     } else {
       this.getUserList();
     }
@@ -81,16 +84,27 @@ export default {
         }
       });
     },
-    // clear() {
-    //   this.form = {
-    //     taskName: "",
-    //     duration: "",
-    //     desc: "",
-    //     level: 1,
-    //     userId: [],
-    //     id: "",
-    //   };
-    // },
+    clear() {
+      console.log(1);
+      this.form = {
+        taskName: "",
+        duration: "",
+        desc: "",
+        level: 1,
+        userId: [],
+        id: "",
+      };
+    },
+    async getTaskRelease(item) {
+      const { taskId, userIds } = item;
+      let res = await getTaskReleaseApi({
+        taskId,
+        userIds,
+      });
+      if (res.data.status == 1) {
+        console.log(res);
+      }
+    },
     async getUserList() {
       let res = await getUserListApi({ pagination: false });
       if (res.data.status == 1) {
@@ -101,14 +115,14 @@ export default {
         });
       }
     },
-    async GetUnchecked(data) {
+    async GetUnchecked() {
+      console.log(1);
       let [userList, taskDetail] = await Promise.all([
         getUserListApi({ pagination: false }),
-        getTaskDetailApi({ taskId: data.taskId }),
+        getTaskDetailApi({ taskId: this.form.taskId }),
       ]);
       let users = userList.data.data.data.rows;
       let choiceUser = taskDetail.data.data.receivedData;
-
       this.users = users.map((item) => {
         let user = JSON.parse(JSON.stringify(item));
         user.screen = choiceUser.find((data) => data.userId == item.id) ? 1 : 0;

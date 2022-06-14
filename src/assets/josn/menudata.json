@@ -1,0 +1,76 @@
+[
+    {
+        "id": "1",
+        "label": "题库管理",
+        "checked": false,
+        "children": [
+            {
+                "id": "1001",
+                "index": "affairs",
+                "label": "HTML题库"
+            },
+            {
+                "id": "1002",
+                "label": "CSS题库"
+            },
+            {
+                "id": "1003",
+                "label": "JS题库"
+            }
+        ]
+    },
+    {
+        "id": "2",
+        "label": "任务管理",
+        "checked": false,
+        "children": [
+            {
+                "id": "2001",
+                "index": "learning",
+                "label": "任务列表"
+            },
+            {
+                "id": "2002",
+                "index": "commun",
+                "label": "创建任务"
+            },
+            {
+                "id": "2003",
+                "index": "information",
+                "label": "学术探讨"
+            }
+        ]
+    },
+    {
+        "id": "3",
+        "label": "账号设置",
+        "checked": false,
+        "children": [
+            {
+                "id": "3001",
+                "index": "jurisdiction",
+                "label": "角色管理"
+            },
+            {
+                "id": "3002",
+                "index": "management",
+                "label": "用户中心"
+            },
+            {
+                "id": "3003",
+                "index": "setup",
+                "label": "修改资料"
+            },
+            {
+                "id": "3004",
+                "index": "permissions",
+                "label": "创建角色"
+            },
+            {
+                "id": "3005",
+                "index": "configure",
+                "label": "权限配置"
+            }
+        ]
+    }
+]

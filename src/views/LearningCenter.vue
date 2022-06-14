@@ -106,6 +106,8 @@ export default {
         level: level == 1 ? true : false,
       };
       this.editTask = true;
+      // console.log(this.$refs.task);
+      this.$refs.task.GetUnchecked();
       console.log(888);
     },
     async getTaskUpdate(item) {
@@ -117,8 +119,10 @@ export default {
         level: item.level,
       });
       if (res.data.status == 1) {
-        this.getTaskList();
         this.editTask = false;
+        this.$refs.task.clear();
+        this.$refs.task.getTaskRelease(item);
+        this.getTaskList();
       }
     },
     async getUserList() {
@@ -162,8 +166,6 @@ export default {
       this.dialogVisible = false;
     },
     async createQuestion() {
-      console.log(this.value);
-      console.log(this.taskId);
       let res = await getTaskReleaseApi({
         userIds: this.value,
         taskId: this.taskId,

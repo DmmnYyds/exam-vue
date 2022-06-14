@@ -1,6 +1,16 @@
-// 统一的接口
+// 统一的接口n
 // api.js就是存放服务端的接口的;
 import axios from "axios";
+
+// 添加请求拦截器
+axios.interceptors.request.use(function (config) {
+    // 在发送请求之前做些什么
+    config.headers.authorization = sessionStorage.getItem('token')
+    return config;
+}, function (error) {
+    // 对请求错误做些什么
+    return Promise.reject(error);
+});
 
 // 添加响应拦截器
 axios.interceptors.response.use(function (response) {
@@ -16,7 +26,7 @@ axios.interceptors.response.use(function (response) {
 
 const postConfig = {
     headers: {
-        authorization: sessionStorage.getItem('token'),
+
         contentType: 'application/json',
     },
 }
@@ -223,6 +233,35 @@ export const getRoleGroupListApi = function (payload = { pagination: false }) {
 
 export const getRoleListApi = function (payload = { pagination: false }) {
     return axios.post('api/role/list', payload, postConfig)
+}
+/**
+ * @description 获取权限列表
+ * **/
+
+export const getPermissionListApi = function (payload = { pagination: false }) {
+    return axios.post('api/permission/list', payload, postConfig)
+}
+/**
+ * @description 创建权限
+ * **/
+
+export const getPermissionCreateApi = function (payload = { pagination: false }) {
+    return axios.post('api/permission/create', payload, postConfig)
+}
+/**
+ * @description 删除权限
+ * **/
+
+export const getPermissionDeleteApi = function (payload = { pagination: false }) {
+    return axios.post('api/permission/delete', payload, postConfig)
+}
+
+/**
+ * @description 修改权限
+ * **/
+
+export const getPermissionUpdateApi = function (payload = { pagination: false }) {
+    return axios.post('api/permission/update', payload, postConfig)
 }
 
 

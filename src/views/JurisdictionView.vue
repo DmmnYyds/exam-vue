@@ -34,60 +34,19 @@
               <el-tab-pane label="功能权限" name="second">
                 <div class="second-title">
                   <span class="second-span">设置角色对应的功能操作、应用管理、后台管理权限</span>
-                  <el-checkbox class="el-checkbox" v-model="checkAll">全选</el-checkbox>
                 </div>
-                <div class="second-subject">
-                  <el-checkbox class="item">AAA</el-checkbox>
+                <div class="second-subject" v-for="item in cityOption" :key="item.label">
+                  <el-checkbox class="item" @change="handleCheckAllChange($event,item)" :indeterminate="item.isIndeterminate" v-model="item.checked">{{item.label}}</el-checkbox>
                   <div class="item-v">
-                    <div>
-                      <el-checkbox>BBB</el-checkbox>
-                      <el-checkbox>BBB</el-checkbox>
-                      <el-checkbox>BBB</el-checkbox>
-                    </div>
-                    <div>
-                      <el-checkbox>BBB</el-checkbox>
-                      <el-checkbox>BBB</el-checkbox>
-                      <el-checkbox>BBB</el-checkbox>
-                    </div>
-                  </div>
-                  <el-checkbox class="item">AAA</el-checkbox>
-                  <div class="item-v">
-                    <div>
-                      <el-checkbox>BBB</el-checkbox>
-                    </div>
-                    <div>
-                      <el-checkbox>BBB</el-checkbox>
-                      <el-checkbox>BBB</el-checkbox>
-                      <el-checkbox>BBB</el-checkbox>
-                    </div>
-                  </div>
-                  <el-checkbox class="item">AAA</el-checkbox>
-                  <div class="item-v">
-                    <div>
-                      <el-checkbox>BBB</el-checkbox>
-                      <el-checkbox>BBB</el-checkbox>
-                      <el-checkbox>BBB</el-checkbox>
-                    </div>
-                    <div>
-                      <el-checkbox>BBB</el-checkbox>
-                    </div>
-                  </div>
-                  <el-checkbox class="item">AAA</el-checkbox>
-                  <div class="item-v">
-                    <div>
-                      <el-checkbox>BBB</el-checkbox>
-                      <el-checkbox>BBB</el-checkbox>
-                      <el-checkbox>BBB</el-checkbox>
-                    </div>
-                    <div>
-                      <el-checkbox>BBB</el-checkbox>
-                      <el-checkbox>BBB</el-checkbox>
-                      <el-checkbox>BBB</el-checkbox>
-                    </div>
+                    <el-checkbox-group v-model="item.arr" @change="handleCheckedCitiesChange($event,item)">
+                      <el-checkbox v-for="city in item.children" :label="city" :key="city">{{city}}</el-checkbox>
+                    </el-checkbox-group>
                   </div>
                 </div>
-
               </el-tab-pane>
+
+              <div style="margin: 15px 0;"></div>
+
               <el-tab-pane label="数据范围" name="third">数据范围</el-tab-pane>
             </el-tabs>
           </div>
@@ -99,15 +58,14 @@
 
 <script>
 import { getRoleGroupListApi, getRoleListApi } from "@/assets/api/api";
+import menudata from "@/assets/josn/menudata.json";
+const cityOptions = menudata;
 export default {
   data() {
     return {
+      cityOption: [],
       activeName: "second",
-      checkedCities: [],
-      checkAll: false,
-      group: [],
       groupName: [],
-      menuList: [],
       role: [],
       roleGroup: [],
     };
@@ -115,17 +73,28 @@ export default {
 
   created() {
     this.getMenuList();
+    this.cityOption = cityOptions.map((item) => {
+      let data = JSON.parse(JSON.stringify(item));
+      data.isIndeterminate = false;
+      data.children = data.children.map((vm) => vm.label);
+      data.arr = [];
+      return data;
+    });
   },
   methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
+    handleCheckAllChange(val, group) {
+      group.isIndeterminate = false;
+      group.arr = val ? group.children : [];
     },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
+    handleCheckedCitiesChange(value, group) {
+      console.log(value);
+      console.log(group);
+      let checkedCount = value.length;
+      group.checked = checkedCount === group.children.length;
+      group.isIndeterminate =
+        checkedCount > 0 && checkedCount < group.children.length;
     },
-    handleClick(tab, event) {
-      console.log(tab, event);
-    },
+
     forRoleGroup() {
       var arr = [];
       this.group.forEach((item) => {
@@ -143,7 +112,16 @@ export default {
       this.roleGroup.forEach((item) => {
         item.complete = this.role.filter((items) => items.groupId == item.id);
       });
-      console.log(this.roleGroup);
+    },
+
+    handleOpen(key, keyPath) {
+      console.log(key, keyPath);
+    },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath);
+    },
+    handleClick(tab, event) {
+      console.log(tab, event);
     },
   },
 };

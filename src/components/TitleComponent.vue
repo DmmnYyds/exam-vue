@@ -10,14 +10,13 @@
 <script>
 export default {
   props: ["icon"],
-  created() {
-    console.log(this.icon);
-  },
+  created() {},
 };
 </script>
 
 <style scoped>
 .title-1 {
-  padding: 12px 15px;
+  padding: 0;
+  margin: 0;
 }
 </style>

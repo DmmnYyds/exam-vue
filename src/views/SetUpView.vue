@@ -126,7 +126,7 @@ export default {
       this.province = citydata;
       let res = await getUserInfoApi();
       if (res.data.status == 1) {
-        this.form = res.data.data[0];
+        this.form = res.data.data;
         console.log(res.data.data[0]);
         delete this.form.id;
         delete this.form.townNo;
