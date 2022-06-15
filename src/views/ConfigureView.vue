@@ -64,6 +64,7 @@ export default {
         title: "",
         type: 1,
         pid: "",
+        id: null,
       },
       arr: [],
       data: [],
@@ -86,7 +87,6 @@ export default {
     },
 
     async getPermissionUpdate(data) {
-      console.log(data);
       const { title, id, pid, type } = data;
       let res = await getPermissionUpdateApi({
         title,
@@ -113,12 +113,7 @@ export default {
       });
     },
     async createQuestion() {
-      const { title, type, pid } = this.from;
-      let res = await getPermissionCreateApi({
-        title,
-        type,
-        pid,
-      });
+      let res = await getPermissionCreateApi(this.from);
       if (res.data.status == 1) {
         this.$message({
           message: "创建成功",

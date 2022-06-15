@@ -54,7 +54,7 @@
 
 <script>
 import menudata from "@/assets/josn/menudata.json";
-import { logoutApi, getUserInfoApi } from "@/assets/api/api";
+import { logoutApi, getUserInfoApi } from "@/assets/api/api"; 
 export default {
   name: "HomeView",
   components: {},
