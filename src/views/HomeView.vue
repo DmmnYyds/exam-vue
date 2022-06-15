@@ -33,12 +33,12 @@
         <el-aside>
           <el-col :span="16">
             <el-menu :default-active="defaultActive" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" background-color="#0c1c35" text-color="#fff" @select="handleSelect" active-text-color="#ffd04b" unique-opened>
-              <el-submenu :index="item.id" v-for="item in menudata" :key="item.index">
+              <el-submenu :index="item.name" v-for="item in menudata" :key="item.name">
                 <template slot="title">
                   <i class="el-icon-location"></i>
                   <span>{{item.label}}</span>
                 </template>
-                <el-menu-item class="el-meun-item" :index="sub.index" v-for="sub in item.children" :key="sub.index" @click="navigator(sub.index)">
+                <el-menu-item class="el-meun-item" :index="sub.name" v-for="sub in item.children" :key="sub.name" @click="navigator(sub.name)">
                   {{sub.label}}</el-menu-item>
               </el-submenu>
             </el-menu>
@@ -53,8 +53,8 @@
 </template>
 
 <script>
-import menudata from "@/assets/josn/menudata.json";
-import { logoutApi, getUserInfoApi } from "@/assets/api/api"; 
+import menu from "@/assets/josn/menu.config.js";
+import { logoutApi, getUserInfoApi } from "@/assets/api/api";
 export default {
   name: "HomeView",
   components: {},
@@ -67,8 +67,9 @@ export default {
   },
   // 实例生成前调用信息
   created() {
-    this.menudata = menudata;
-    this.defaultActive = menudata[0].children[0].index;
+    console.log(menu);
+    this.menudata = menu;
+    this.defaultActive = menu[0].children[0].name;
     getUserInfoApi().then((res) => {
       this.username = res.data.data.phone;
       localStorage.setItem("wbl", res.data.data.id);
@@ -76,7 +77,6 @@ export default {
   },
   methods: {
     // 打开子窗口
-
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
     },

@@ -181,8 +181,8 @@ export default {
     this.addSocketUser();
     let res = await getUserInfoApi();
     if (res.data.status == 1) {
-      this.obj.userId = res.data.data[0].id;
-      this.obj.avatarName = res.data.data[0].avatarName;
+      this.obj.userId = res.data.data.id;
+      this.obj.avatarName = res.data.data.avatarName;
     }
   },
   methods: {

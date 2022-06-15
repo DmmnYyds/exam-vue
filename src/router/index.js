@@ -12,96 +12,85 @@ const routes = [
     component: HomeView,
     children: [
       {
-        path: '/information',
-        name: 'information',
+        path: '/myDiary',
+        name: 'myDiary',
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "information" */ '../views/InformationView.vue')
+        component: () => import(/* webpackChunkName: "myDiary" */ '../views/MyDiaryView.vue')
       },
       {
-        path: '/commun',
-        name: 'commun',
+        path: '/createTask',
+        name: 'createTask',
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "commun" */ '../views/CommunView.vue')
+        component: () => import(/* webpackChunkName: "createTask" */ '../views/CreateTaskView.vue')
       },
       {
-        path: '/learning',
-        name: 'learning',
+        path: '/taskList',
+        name: 'taskList',
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "learning" */ '../views/LearningCenter.vue')
+        component: () => import(/* webpackChunkName: "taskList" */ '../views/TaskListView.vue')
       },
       {
-        path: '/affairs',
-        name: 'affairs',
+        path: '/question',
+        name: 'question',
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "affairs" */ '../views/AffairsView.vue')
+        component: () => import(/* webpackChunkName: "question" */ '../views/QuestionView.vue')
       },
       {
-        path: '/setup',
-        name: 'setup',
+        path: '/rolelist',
+        name: 'rolelist',
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "setup" */ '../views/SetUpView.vue')
+        component: () => import(/* webpackChunkName: "rolelist" */ '../views/RolelistView.vue')
       },
       {
-        path: '/jurisdiction',
-        name: 'jurisdiction',
+        path: '/userInfo',
+        name: 'userInfo',
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "jurisdiction" */ '../views/JurisdictionView.vue')
+        component: () => import(/* webpackChunkName: "userInfo" */ '../views/UserInfoView.vue')
       },
       {
-        path: '/permissions',
-        name: 'permissions',
+        path: '/roleManage',
+        name: 'roleManage',
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "permissions" */ '../views/PermissionsView.vue')
+        component: () => import(/* webpackChunkName: "roleManage" */ '../views/RoleManageView.vue')
       },
-
-
       {
-        path: '/administration',
-        name: 'administration',
+        path: '/createRole',
+        name: 'createRole',
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "administration" */ '../views/AdministrationView.vue')
+        component: () => import(/* webpackChunkName: "createRole" */ '../views/CreateRoleView.vue')
       },
 
-
       {
-        path: '/management',
-        name: 'management',
+        path: '/permissionConfig',
+        name: 'permissionConfig',
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "management" */ '../views/ManagementView.vue')
+        component: () => import(/* webpackChunkName: "configure" */ '../views/PermissionConfigView.vue')
       },
       {
-        path: '/configure',
-        name: 'configure',
+        path: '/about',
+        name: 'about',
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "configure" */ '../views/ConfigureView.vue')
-      },
-      {
-        path: '/details',
-        name: 'details',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "details" */ '../views/DetailsView.vue')
+        component: () => import(/* webpackChunkName: "details" */ '../views/AboutView.vue')
       },
 
     ]
